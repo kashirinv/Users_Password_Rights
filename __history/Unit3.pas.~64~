@@ -1,0 +1,288 @@
+unit Unit3;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls;
+
+type
+  TFormUser = class(TForm)
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Memo1: TMemo;
+    Button4: TButton;
+    Button5: TButton;
+    ButtonCreate: TButton;
+    EditCreateFileName: TEdit;
+    ComboBox1: TComboBox;
+    ButtonSetRights: TButton;
+    ButtonDelete: TButton;
+    Button6: TButton;
+    EditKey: TEdit;
+    Label1: TLabel;
+    Button7: TButton;
+    procedure Button7Click(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
+   { procedure ButtonDeleteDirClick(Sender: TObject);
+    procedure ButtonDirClick(Sender: TObject); }
+    procedure ButtonDeleteClick(Sender: TObject);
+    procedure ButtonSetRightsClick(Sender: TObject);
+    procedure ButtonCreateClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+
+    procedure Button3Click(Sender: TObject);
+
+
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormUser: TFormUser;
+
+implementation
+
+uses Unit1, Unit5, Unit6;
+
+{$R *.dfm}
+function GetRight(DocName,UserName:string):integer;
+var
+f,g:TStrings;
+i:integer;
+begin
+f:=TStringList.Create;
+f.LoadFromFile('AccessFiles.txt');
+ for i := 1 to f.Count - 1 do
+     begin
+       if f.Strings[i]=DocName then   //сравниваем файл из перечня
+        break;                           //с введённым
+     end;                                //и находим его номер
+  f.Free;
+g:=TStringList.Create();
+g.LoadFromFile('users/'+UserName+'.txt');
+i:=StrToInt(g.Strings[i]);
+g.Free;
+Result:=i;
+end;
+
+procedure TFormUser.Button1Click(Sender: TObject);
+begin
+FormPas.ShowModal;
+end;
+
+procedure TFormUser.Button2Click(Sender: TObject);
+begin
+FormReg.Edit1.Enabled:=true;
+FormUser.Close;
+end;
+
+
+
+procedure TFormUser.Button3Click(Sender: TObject);
+begin
+ Memo1.Clear;
+ Memo1.Enabled:=True;
+ ComboBox1.Enabled:=True;
+end;
+
+procedure TFormUser.Button4Click(Sender: TObject);
+var
+r:integer;
+begin
+r:=GetRight(ComboBox1.Text,FormReg.Edit1.Text);
+ case r of                 //под этим номером находиться право на этот файл
+ 0: begin   //собственник              //каждого пользователя(в его личном файле)
+     Memo1.lines.LoadFromFile('files/'+ComboBox1.Text+'.txt');
+     ComboBox1.Enabled:=false;
+    end;
+ 1: begin   //хозяин               //каждого пользователя(в его личном файле)
+     Memo1.lines.LoadFromFile('files/'+ComboBox1.Text+'.txt');
+     ComboBox1.Enabled:=false;
+    end;
+ 2: begin   //пользователь
+     Memo1.lines.LoadFromFile('files/'+ComboBox1.Text+'.txt');
+     ComboBox1.Enabled:=false;
+     Memo1.Enabled:=false;
+    end;
+ 3: Memo1.Text:='У вас нет прав для просмотра этого файла';//непользователь
+ end;
+end;
+
+procedure TFormUser.Button5Click(Sender: TObject);
+var
+r:Integer;
+begin
+r:=GetRight(ComboBox1.Text,FormReg.Edit1.Text);
+ case r of
+ 1:begin
+    Memo1.Lines.SaveToFile('files/'+ComboBox1.Text+'.txt');
+    ShowMessage('File Saved');
+   end;
+ 0:begin
+    Memo1.Lines.SaveToFile('files/'+ComboBox1.Text+'.txt');
+    ShowMessage('File Saved');
+   end;
+ else ShowMessage('У вас нет прав');
+end;
+end;
+
+procedure TFormUser.Button6Click(Sender: TObject);
+var
+f:TStrings;
+i,j:integer;
+begin
+f:=TStringList.Create(EditCreateFileName.Text+'.txt');
+
+for i := 0 to f.Count - 1 do
+for j:=0 to Length(f.Strings[i])do
+Memo1.Lines[i,j]:=f.Strings[i,j]-EditKey.Text[j];
+Memo1.Lines.SaveToFile(EditCreateFileName.Text+'.cry');
+f.Free;
+DeleteFile(EditCreateFileName.Text+'.txt');
+EditKey.Clear;
+end;
+
+procedure TFormUser.Button7Click(Sender: TObject);
+var
+f:TStrings;
+i,j:integer;
+begin
+f:=TStringList.Create(EditCreateFileName.Text+'.cry');
+
+for i := 0 to f.Count - 1 do
+for j:=0 to Length(f.Strings[i])do
+Memo1.Lines[i,j]:=f.Strings[i,j]-EditKey.Text[j];
+Memo1.Lines.SaveToFile(EditCreateFileName.Text+'.txt');
+f.Free;
+DeleteFile(EditCreateFileName.Text+'.cry');
+EditKey.Clear;
+end;
+
+procedure TFormUser.ButtonCreateClick(Sender: TObject);
+var
+f,g:TStrings;
+i:integer;
+flag:boolean;
+begin
+flag:=true;
+ f:=TStringList.Create();
+ f.LoadFromFile('AccessFiles.txt');
+ g:=TStringList.Create();
+ for i := 1 to f.Count - 1 do
+    begin  if f.strings[i]=EditCreateFileName.Text then
+     flag:=false;
+    end;
+ if flag then
+  begin
+  Memo1.Lines.SaveToFile('files/'+EditCreateFileName.Text+'.txt');
+//Теперь надо прописать его существование
+
+f.Add(EditCreateFileName.Text);
+f.SaveToFile('AccessFiles.txt');
+
+g.LoadFromFile('users.txt');
+ for i := 0 to g.Count - 1 do
+   begin
+    f.LoadFromFile('users/'+g.Strings[i]+'.txt');
+   if g.Strings[i]=FormReg.Edit1.Text then
+   f.Add('0')
+   else f.Add('3');
+    f.SaveToFile('users/'+g.Strings[i]+'.txt');
+
+   end;
+  end;
+  if flag then
+  begin
+     ShowMessage('Congratulations! File Created Succesfully!');
+   ComboBox1.Items.Add(EditCreateFileName.Text);
+  end;
+f.Free;
+g.Free;
+
+end;
+
+procedure TFormUser.ButtonDeleteClick(Sender: TObject);
+var                          
+f,g:TStrings;
+r,i,j:integer;
+begin
+ f:=TStringList.Create();
+ g:=TStringlist.Create();
+ g.LoadFromFile('users.txt');
+ f.LoadFromFile('AccessFiles.txt');
+ r:=GetRight(ComboBox1.Text,FormReg.Edit1.Text);
+  if r=0 then
+   begin
+    DeleteFile('files/'+ComboBox1.Text+'.txt');
+      for i := 1 to f.Count - 1 do
+        if f.Strings[i]=ComboBox1.Text then
+        begin
+        f.Delete(i);
+        f.SaveToFile('AccessFiles.txt');
+        break;
+        end;
+      for j := 0 to g.Count - 1 do
+        begin
+          f.LoadFromFile('users/'+g.Strings[j]+'.txt');
+          f.Delete(i);
+          f.SaveToFile('users/'+g.Strings[j]+'.txt');
+
+        end;
+      ComboBox1.Items.Delete(i-1);
+      ShowMessage('File deleted');
+      ComboBox1.Text:=ComboBox1.Items[0];
+
+   end
+  else ShowMessage('Предъявите права!');
+f.Free;
+g.Free;
+end;
+
+
+procedure TFormUser.ButtonSetRightsClick(Sender: TObject);
+var
+r:integer;
+begin
+r:=GetRight(ComboBox1.Text,FormReg.Edit1.Text);
+case r of
+ 0:begin
+     FormRights.ComboBoxFileName.Text:=ComboBox1.Text;
+     FormRights.ComboBoxFileName.Enabled:=false;
+     FormRights.ShowModal();
+   end;
+ else ShowMessage('Вы не имеете права так поступать!!!');
+end;
+end;
+
+
+
+procedure TFormUser.FormCreate(Sender: TObject);
+begin
+Memo1.Text:='';
+ComboBox1.Items.LoadFromFile('AccessFiles.txt'); //Только из каталога Files
+ComboBox1.Items.Delete(0);
+ComboBox1.Text:=ComboBox1.Items[0];
+//ComboBoxDir.Items:=надо как-то по-хитрому загрузить
+end;
+
+procedure TFormUser.FormShow(Sender: TObject);
+var
+f:TStrings;
+begin
+Memo1.Text:='Здравствуй, дорогой пользователь.';
+f:=TStringList.Create();
+f.LoadFromFile('users/'+FormReg.Edit1.text+'.txt');
+if f.Strings[0]='Creators' then
+ ButtonCreate.Enabled:=true;
+ f.Free;
+end;
+end.

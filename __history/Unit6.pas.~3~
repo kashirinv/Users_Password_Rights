@@ -1,0 +1,67 @@
+unit Unit6;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls;
+
+type
+  TFormRights = class(TForm)
+    EditFileName: TEdit;
+    ComboBoxGroup: TComboBox;
+    Panel1: TPanel;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    RadioButton3: TRadioButton;
+    ButtonAccept: TButton;
+    Panel2: TPanel;
+    RadioButton4: TRadioButton;
+    RadioButton5: TRadioButton;
+    procedure ButtonAcceptClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormRights: TFormRights;
+
+implementation
+
+uses Unit3, Unit4;
+
+{$R *.dfm}
+
+procedure TFormRights.ButtonAcceptClick(Sender: TObject);
+var
+f:TStrings;
+i,j:integer;
+begin
+f:=TStringList.Create();
+f.LoadFromFile('AccessFiles.txt');
+  for i := 1 to f.Count - 1 do
+    if f.Strings[i]=EditFileName.Text then
+      break();
+ if RadioButton5.Checked then //Один пользователь
+ begin
+ f.LoadFromFile('users/'+ComboBoxGroup+'.txt');
+ if RadioButton1.Checked then
+   f.Strings[i]:='1';
+ if RadioButton3.Checked then
+   f.Strings[i]:='2';
+ if RadioButton3.Checked then
+   f.Strings[i]:='3';
+ f.SaveToFile('users/'+ComboBoxGroup+'.txt');
+ ShowMessage('Access allowed');
+ FormRights.Close();
+ end;
+
+ if RadioButton4.Checked then //Группа
+ begin
+
+ end;
+end;
+
+end.

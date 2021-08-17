@@ -1,0 +1,52 @@
+unit Unit5;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls;
+
+type
+  TFormPas = class(TForm)
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Edit3: TEdit;
+    Button1: TButton;
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormPas: TFormPas;
+
+implementation
+
+uses Unit1;
+
+{$R *.dfm}
+
+procedure TFormPas.Button1Click(Sender: TObject);
+var
+ f,g:TStrings;
+begin
+ f:=TStringList.Create();
+ g:=TStringList.Create();
+ f.LoadFromFile('h:\Защита Информации\Новая Папка\current.txt');
+ g.LoadFromFile('h:\Защита Информации\Новая Папка\parols.txt');
+ if FormPas.Edit1.Text=g.Strings[IntToStr(StrToInt(f.Strings[0]))] then
+  begin
+   if FormPas.Edit2.Text=FormPas.Edit3.Text then
+      begin
+        g.Strings[IntToStr(StrToInt(f.Strings[0]))]:=FormPas.Edit2.Text;
+      end;
+
+  end
+ else ShowMessage('Error');
+ f.Free;
+ g.Free;
+end;
+
+end.

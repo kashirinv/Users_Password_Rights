@@ -1,0 +1,68 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls;
+
+type
+  TFormReg = class(TForm)
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Button1: TButton;
+    Label1: TLabel;
+    Label2: TLabel;
+    Button2: TButton;
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormReg: TFormReg;
+
+implementation
+
+uses Unit2,Unit3, Unit4;
+
+{$R *.dfm}
+
+procedure TFormReg.Button1Click(Sender: TObject);
+var
+f:TStrings;
+g:TStrings;
+i:integer;
+begin
+f:=TStringlist.Create();
+g:=TStringlist.Create();
+f.LoadFromFile('h:\Защита Информации\Новая Папка\users.txt');
+g.LoadFromFile('h:\Защита Информации\Новая Папка\parols.txt');
+for i := 0 to f.Count - 1 do
+begin
+ if f.Strings[i]=FormReg.Edit1.Text then
+ begin
+ if g.Strings[i]=FormReg.Edit2.Text then
+  begin
+    ShowMessage('Correct');
+    f.Free;
+    g.Free;
+    if FormReg.Edit1.Text='admin'
+      then FormAdmin.ShowModal   //открываем админа
+      else FormUser.ShowModal;  // открываем форму юзера
+  end;
+ end;
+
+  end;
+ ShowMessage('Invalid username or password');
+end;
+
+procedure TFormReg.Button2Click(Sender: TObject);
+begin
+FormReg.Close;
+end;
+
+end.

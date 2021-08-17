@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">Default.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{DDF49FA0-FDC5-4138-957C-C877EB6C84A4}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    <Projects>
+      <Projects Name="Project1.exe">Project1.bdsproj</Projects>
+      <Projects Name="Project2.exe">..\Мои документы\Borland Studio Projects\Project2.bdsproj</Projects>
+      <Projects Name="Targets">Project1.exe Project2.exe</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+  <StarTeamAssociation></StarTeamAssociation>
+  <StarTeamNonRelativeFiles></StarTeamNonRelativeFiles>
+</BorlandProject>

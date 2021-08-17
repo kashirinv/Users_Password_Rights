@@ -1,0 +1,158 @@
+unit Unit4;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls;
+
+type
+  TFormAdmin = class(TForm)
+    Button1: TButton;
+    Edit1: TEdit;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    Button6: TButton;
+    Edit2: TEdit;
+    procedure Button6Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+
+
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormAdmin: TFormAdmin;
+  counter:byte;
+
+implementation
+
+uses Unit1, Unit2, Unit5;
+
+{$R *.dfm}
+
+procedure TFormAdmin.Button1Click(Sender: TObject);
+begin
+FormAdd.ShowModal;
+end;
+
+
+
+
+
+procedure TFormAdmin.Button2Click(Sender: TObject);
+var
+f:TStrings;
+begin
+f:=TStringList.Create();
+f.LoadFromFile('users.txt');
+if counter < f.Count - 1 then
+   counter:=counter + 1
+  else
+  counter:=0;
+ FormAdmin.Edit1.Text:=f.Strings[counter];
+ f.Free;
+end;
+
+procedure TFormAdmin.Button3Click(Sender: TObject);
+var
+f:TStrings;
+begin
+f:=TStringList.Create();
+f.LoadFromFile('users.txt');
+if counter>0 then
+   counter:=counter - 1
+  else
+  counter:=f.Count - 1;
+ FormAdmin.Edit1.Text:=f.Strings[counter];
+ f.Free;
+end;
+
+procedure TFormAdmin.Button4Click(Sender: TObject);
+var
+f,g,h,j:TStrings;
+i:integer;
+begin
+f:=TStringList.Create();
+g:=TStringlist.Create();
+h:=TStringList.Create();
+j:=TStringList.Create();
+f.LoadFromFile('users.txt');
+g.LoadFromFile('parols.txt');
+for i := 0 to f.Count - 1 do
+ begin
+ if FormAdmin.Edit1.Text = f.Strings[i] then
+ else
+   begin
+      h.Add(f.Strings[i]);
+      j.Add(g.Strings[i]);
+   end;
+ end;
+
+ DeleteFile('users.txt');
+ DeleteFile('parols.txt');
+
+
+ h.SaveToFile('users.txt');
+ j.SaveToFile('parols.txt');
+ FormAdmin.Edit1.Text:=f.Strings[0];
+ f.Free;
+ g.Free;
+ h.Free;
+ j.Free;
+ ShowMessage('User deleted');
+
+end;
+procedure TFormAdmin.Button5Click(Sender: TObject);
+var
+f,g:TStrings;
+i:integer;
+begin
+f:=TStringList.Create();
+g:=TStringList.Create();
+f.LoadFromFile('users.txt');
+g.LoadFromFile('parols.txt');
+for i := 0 to f.Count - 1 do
+   if f.Strings[i]=FormAdmin.Edit1.Text then
+   FormReg.Edit2.Text:=g.Strings[i];
+   FormPas.ShowModal;
+f.Free;
+g.Free;
+   end;
+
+procedure TFormAdmin.Button6Click(Sender: TObject);
+var
+f:TStrings;
+i:integer;
+flag:boolean;
+begin
+flag:=true;
+f:=TStringList.Create();
+f.LoadFromFile('users.txt');
+for i := 0 to f.Count - 1 do
+ if FormAdmin.Edit2.Text=f.Strings[i] then
+  begin
+  ShowMessage('Invalid username');
+  flag:=false;
+  end;
+ for i := 0 to f.Count - 1 do
+   if flag=true then
+   if FormAdmin.Edit1.Text=f.Strings[i] then
+     begin
+       f.Strings[i]:=FormAdmin.Edit2.Text;
+       f.SaveToFile('users.txt');
+       ShowMessage('Username changed');
+     end;
+  f.free;
+end;
+
+end.

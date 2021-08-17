@@ -1,0 +1,26 @@
+unit Unit5;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs;
+
+type
+  TFormPas = class(TForm)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FormPas: TFormPas;
+
+implementation
+
+uses Unit1;
+
+{$R *.dfm}
+
+end.

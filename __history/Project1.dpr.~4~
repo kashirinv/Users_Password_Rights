@@ -1,0 +1,17 @@
+program Project1;
+
+uses
+  Forms,
+  Unit1 in 'Unit1.pas' {FormReg},
+  Unit2 in 'Unit2.pas' {FormAdmin},
+  Unit3 in 'Unit3.pas' {FormUser};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.CreateForm(TFormReg, FormReg);
+  Application.CreateForm(TFormAdmin, FormAdmin);
+  Application.CreateForm(TFormUser, FormUser);
+  Application.Run;
+end.
